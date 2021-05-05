@@ -35,19 +35,16 @@ intellij {
         "Spring",
         "SpringBoot",
         "properties",
-        "yaml",
-        "DatabaseTools"
+        "yaml"
     )
 
     pluginName = "RestfulToolkit-fix"
-    sandboxDirectory = "${rootProject.rootDir}/idea-sandbox"
-
     updateSinceUntilBuild = false
     isDownloadSources = true
 }
 
-group = "com.zhaow.restful.toolkit"
-version = "2.0.5"
+group = "me.jinghong.restful.toolkit"
+version = "1.0.0"
 
 repositories {
     mavenLocal()
