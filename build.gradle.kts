@@ -26,8 +26,6 @@ java {
 }
 
 intellij {
-    localPath =
-        "/Users/jinghong/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/211.7142.45/IntelliJ IDEA.app"
     type = "IU"
     setPlugins(
         "java",
@@ -37,6 +35,8 @@ intellij {
         "properties",
         "yaml"
     )
+    // version = "2021.3"
+     version = "2021.1.3"
 
     pluginName = "RestfulToolkit-fix"
     updateSinceUntilBuild = false

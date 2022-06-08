@@ -4,30 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiArrayType;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiType;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.java.stubs.index.JavaShortClassNameIndex;
 import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
-import com.intellij.util.text.DateFormatUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 // 处理 实体自关联，第二层自关联字段
 public class PsiClassHelper {
@@ -114,7 +101,7 @@ public class PsiClassHelper {
             case "short": paramValue = Short.valueOf("1");break;
             case "bigdecimal": return BigDecimal.ONE;
             case "string": paramValue = "demoData";break;
-            case "date": paramValue = DateFormatUtil.formatDateTime(new Date());break; // todo: format date
+            case "date": paramValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());break; // todo: format date
 //            default: paramValue = paramType;
         }
         return paramValue;
