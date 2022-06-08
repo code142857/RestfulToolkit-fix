@@ -1,10 +1,10 @@
 <idea-plugin url="https://plugins.jetbrains.com/plugin/10292-restfultoolkit" allow-bundled-update="true">
-  <id>me.jinghong.restful.toolkit</id>
-  <name>RestfulToolkit-fix</name>
-  <version>1.0.0</version>
-  <vendor email="153335058@qq.com" url="">jinghong</vendor>
+    <id>me.jinghong.restful.toolkit</id>
+    <name>RestfulToolkit-fix</name>
+    <version>1.0.1</version>
+    <vendor email="153335058@qq.com" url="">jinghong</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
   <h3>A toolkit for RESTful services development.</h3>
   <ul>
    <li>1.ONE STEP to navigate to service declaration. ( use: Ctrl + \ or Ctrl + Alt + N ) </li>
@@ -32,7 +32,7 @@
 
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
         <li>2.0.5 Bug fixed, supported http request OPTIONS,TRACE,CONNECT methods. </li>
         <li>2.0.4 Fixed NullPointerException with Kotlin project.<br/>
                   Fixed IllegalArgumentException: No enum constant com.zhaow.restful.method.HttpMethod.HEAD <br/>
@@ -65,154 +65,168 @@
        <li>1.0.4 Format Date type (格式化 Date 类型) </li>
        <li>1.0.3 Small cleanup some code. </li>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="145.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="145.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.properties</depends>
     <depends>org.jetbrains.plugins.yaml</depends>
     <depends>org.jetbrains.kotlin</depends>
 
     <project-components>
-<!--        <component>-->
-<!--            <implementation-class>com.zhaow.restful.navigator.RestServicesNavigator</implementation-class>-->
-<!--        </component>-->
+        <!--        <component>-->
+        <!--            <implementation-class>com.zhaow.restful.navigator.RestServicesNavigator</implementation-class>-->
+        <!--        </component>-->
         <component>
             <implementation-class>com.zhaow.restful.navigator.RestServiceProjectsManager</implementation-class>
         </component>
-<!--        <component>
-            <implementation-class>com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration</implementation-class>
-        </component>-->
+        <!--        <component>
+                    <implementation-class>com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration</implementation-class>
+                </component>-->
         <component>
             <implementation-class>com.zhaow.restful.navigator.RestServiceDetail</implementation-class>
         </component>
     </project-components>
 
 
-  <extensions defaultExtensionNs="com.intellij">
-      <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
-    <!-- Add your extensions here -->
-      <!--<productivityFeaturesProvider  implementation="com.zhaow.restful.statistics.RestfulToolkitFeaturesProvider" />-->
-      <tipAndTrick feature-id="navigation.popup.service" file="GotoService.html"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="com.zhaow.restful.navigation.action.GotoRequestMappingConfiguration"/>
+        <!-- Add your extensions here -->
+        <!--<productivityFeaturesProvider  implementation="com.zhaow.restful.statistics.RestfulToolkitFeaturesProvider" />-->
+        <tipAndTrick feature-id="navigation.popup.service" file="GotoService.html"/>
+    </extensions>
 
     <application-components>
         <!-- Add your application components here -->
     </application-components>
 
 
-  <actions>
-      <action id="Popup.PopupChoiceAction"
-              class="com.zhaow.restful.popup.action.PopupChoiceAction"
-              text="Popup RESTful Toolkit ..."
-              description="Popup RESTful Toolkit ...">
-          <add-to-group group-id="EditMenu" anchor="last"/>
-          <keyboard-shortcut keymap="$default" first-keystroke="alt shift R"/>
-      </action>
+    <actions>
+        <action id="Popup.PopupChoiceAction"
+                class="com.zhaow.restful.popup.action.PopupChoiceAction"
+                text="Popup RESTful Toolkit ..."
+                description="Popup RESTful Toolkit ...">
+            <add-to-group group-id="EditMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift R"/>
+        </action>
 
-      <!--在controller method 中添加 RestfulToolkit 弹出操作，generate rest url、generate rest url with Possibly params （添加可能的参数，解析实体，@RequestBody）、gen json、
-      gen key value for postman(postman 参数bulk edit)、 gen key value for apiview submit -->
-      <!--rest 方法中添加-->
-      <group id="RestfulToolkitGroup" text="RestfulToolkit" description="RESTful Toolkit actions for rest method group"
-            >
-          <!--<add-to-group group-id="EditorPopupMenu" anchor="first"/>-->
-          <action class="com.zhaow.restful.method.action.GenerateFullUrlAction" id="GenerateFullRestUrl" text="Generate &amp;&amp; Copy Full URL">
-              <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-          </action>
-          <action class="com.zhaow.restful.method.action.GenerateUrlAction" id="GenerateRestUrl" text="Generate &amp;&amp; Copy Relation URL">
-              <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-          </action>
-          <action class="com.zhaow.restful.method.action.GenerateQueryParamJsonAction" id="GenerateRequestBodyJson" text="Generate &amp;&amp; Copy RequestBody (JSON)">
-              <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-          </action>
-          <action class="com.zhaow.restful.method.action.GenerateQueryParamAction" id="BuildQueryParam" text="Generate &amp;&amp; Copy Query Param (Key Value)">
-              <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-          </action>
-          <!--jaxrs-->
-
-      </group>
-
-
-      <group id="RestfulToolkit.RestMethod.EditorPopupMenu" text="RESTful Toolkit"
-             description="RESTful Toolkit"
-             popup="false">
-          <!--<add-to-group group-id="EditorPopupMenu" anchor="last" relative-to-action="EditorToggleColumnMode"/>-->
-          <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-          <!--<reference ref="GenerateRestUrl"/>-->
-      </group>
-
-
-      <!--实体中添加 gen json、
-      gen key value for postman( postman 参数 bulk edit )-->
-
-
-      <!--跳转导航： 根据rest url 导航 参考 request mapper  ( Enter mapping url ) 快捷键用 ctl alt n -->
-
-      <!-- show services -->
-      <action id="ConvertClassToJSONAction" class="com.zhaow.restful.action.ConvertClassToJSONAction" text="Convert to JSON" description="Convert to JSON">
-          <add-to-group group-id="EditorPopupMenu" anchor="first" />
-      </action>
-      <action id="ConvertClassToJSONCompressedAction" class="com.zhaow.restful.action.ConvertClassToJSONCompressedAction" text="Convert to JSON (Compressed)" description="Convert to JSON (Compressed)">
-          <add-to-group group-id="EditorPopupMenu" anchor="first" />
-      </action>
-
-      <!-- url 导航 -->
-      <action id="Toolkit.GotoService" class="com.zhaow.restful.navigation.action.GotoRequestMappingAction"
-               text="_Service" description="Go to Service"
-                icon="AllIcons.Actions.Search">
-          <add-to-group group-id="GoToTargetEx" anchor="first"/>
-          <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH" />
-          <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt N"/>
-      </action>
-
-      <!--code gen-->
-<!--
-      <action class="com.zhaow.restful.codegen.SpringBootGenerator" id="CodeGen"
-              text="SpringBoot Generator"
-              description="SpringBoot Generator">
-          <add-to-group group-id="GenerateGroup" anchor="first"/>
-      </action>
--->
-
-      <!--刷新-->
-      <action id="Toolkit.RefreshServices" class="com.zhaow.restful.navigator.RefreshProjectAction"
-              text="Refresh Services in Project"
-              icon="AllIcons.Actions.Refresh">
-      </action>
-
-      <group id="Toolkit.NavigatorActionsToolbar">
-          <reference id="Toolkit.RefreshServices"/>
-          <separator/>
-          <reference id="Toolkit.GotoService"/>
-          <separator/>
-      </group>
-
-      <group id="Toolkit.NavigatorServiceMenu">
-          <action id="Menu.CopyFullUrlAction" class="com.zhaow.restful.navigator.CopyFullUrlAction"
-                  text="Copy Full Url"
-                  icon="AllIcons.Actions.Copy">
-          </action>
-          <action id="Menu.EditSourceAction" class="com.zhaow.restful.navigator.EditSourceAction"
-                  text="Jump to Source"
-                  icon="AllIcons.Actions.EditSource">
-          </action>
-          <separator/>
-      </group>
-
-      <!--      <action id="SpringBootAppRunnerAction" class="com.zhaow.restful.runner.SpringBootAppRunnerAction" text="SpringBootAppRunnerAction"
-                    description="SpringBootAppRunnerAction">
-                &lt;!&ndash;<add-to-group group-id="RunnerActions" anchor="after" relative-to-action=""/>&ndash;&gt;
-                <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
+        <!--在controller method 中添加 RestfulToolkit 弹出操作，generate rest url、generate rest url with Possibly params （添加可能的参数，解析实体，@RequestBody）、gen json、
+        gen key value for postman(postman 参数bulk edit)、 gen key value for apiview submit -->
+        <!--rest 方法中添加-->
+        <group id="RestfulToolkitGroup" text="RestfulToolkit"
+               description="RESTful Toolkit actions for rest method group"
+        >
+            <!--<add-to-group group-id="EditorPopupMenu" anchor="first"/>-->
+            <action class="com.zhaow.restful.method.action.GenerateFullUrlAction" id="GenerateFullRestUrl"
+                    text="Generate &amp;&amp; Copy Full URL">
+                <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             </action>
-            -->
+            <action class="com.zhaow.restful.method.action.GenerateUrlAction" id="GenerateRestUrl"
+                    text="Generate &amp;&amp; Copy Relation URL">
+                <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            </action>
+            <action class="com.zhaow.restful.method.action.GenerateQueryParamJsonAction" id="GenerateRequestBodyJson"
+                    text="Generate &amp;&amp; Copy RequestBody (JSON)">
+                <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            </action>
+            <action class="com.zhaow.restful.method.action.GenerateQueryParamAction" id="BuildQueryParam"
+                    text="Generate &amp;&amp; Copy Query Param (Key Value)">
+                <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            </action>
+            <!--jaxrs-->
 
-  </actions>
+        </group>
+
+
+        <group id="RestfulToolkit.RestMethod.EditorPopupMenu" text="RESTful Toolkit"
+               description="RESTful Toolkit"
+               popup="false">
+            <!--<add-to-group group-id="EditorPopupMenu" anchor="last" relative-to-action="EditorToggleColumnMode"/>-->
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <!--<reference ref="GenerateRestUrl"/>-->
+        </group>
+
+
+        <!--实体中添加 gen json、
+        gen key value for postman( postman 参数 bulk edit )-->
+
+
+        <!--跳转导航： 根据rest url 导航 参考 request mapper  ( Enter mapping url ) 快捷键用 ctl alt n -->
+
+        <!-- show services -->
+        <action id="ConvertClassToJSONAction" class="com.zhaow.restful.action.ConvertClassToJSONAction"
+                text="Convert to JSON" description="Convert to JSON">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action id="ConvertClassToJSONCompressedAction"
+                class="com.zhaow.restful.action.ConvertClassToJSONCompressedAction" text="Convert to JSON (Compressed)"
+                description="Convert to JSON (Compressed)">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <action id="ConvertClassToBulkValueAction" class="com.zhaow.restful.action.ConvertClassToBulkValueAction"
+                text="Convert to Bulk Value" description="Convert to Bulk Value">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+        <!-- url 导航 -->
+        <action id="Toolkit.GotoService" class="com.zhaow.restful.navigation.action.GotoRequestMappingAction"
+                text="_Service" description="Go to Service"
+                icon="AllIcons.Actions.Search">
+            <add-to-group group-id="GoToTargetEx" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl BACK_SLASH"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt N"/>
+        </action>
+
+        <!--code gen-->
+        <!--
+              <action class="com.zhaow.restful.codegen.SpringBootGenerator" id="CodeGen"
+                      text="SpringBoot Generator"
+                      description="SpringBoot Generator">
+                  <add-to-group group-id="GenerateGroup" anchor="first"/>
+              </action>
+        -->
+
+        <!--刷新-->
+        <action id="Toolkit.RefreshServices" class="com.zhaow.restful.navigator.RefreshProjectAction"
+                text="Refresh Services in Project"
+                icon="AllIcons.Actions.Refresh">
+        </action>
+
+        <group id="Toolkit.NavigatorActionsToolbar">
+            <reference id="Toolkit.RefreshServices"/>
+            <separator/>
+            <reference id="Toolkit.GotoService"/>
+            <separator/>
+        </group>
+
+        <group id="Toolkit.NavigatorServiceMenu">
+            <action id="Menu.CopyFullUrlAction" class="com.zhaow.restful.navigator.CopyFullUrlAction"
+                    text="Copy Full Url"
+                    icon="AllIcons.Actions.Copy">
+            </action>
+            <action id="Menu.EditSourceAction" class="com.zhaow.restful.navigator.EditSourceAction"
+                    text="Jump to Source"
+                    icon="AllIcons.Actions.EditSource">
+            </action>
+            <separator/>
+        </group>
+
+        <!--      <action id="SpringBootAppRunnerAction" class="com.zhaow.restful.runner.SpringBootAppRunnerAction" text="SpringBootAppRunnerAction"
+                      description="SpringBootAppRunnerAction">
+                  &lt;!&ndash;<add-to-group group-id="RunnerActions" anchor="after" relative-to-action=""/>&ndash;&gt;
+                  <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewDir"/>
+              </action>
+              -->
+
+    </actions>
 
 </idea-plugin>

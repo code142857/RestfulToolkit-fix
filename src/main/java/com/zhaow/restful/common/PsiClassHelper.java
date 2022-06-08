@@ -102,6 +102,7 @@ public class PsiClassHelper {
             case "bigdecimal": return BigDecimal.ONE;
             case "string": paramValue = "demoData";break;
             case "date": paramValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());break; // todo: format date
+            case "localdatetime": paramValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());break; // todo: format date
 //            default: paramValue = paramType;
         }
         return paramValue;
