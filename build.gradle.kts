@@ -36,7 +36,7 @@ intellij {
         "yaml"
     )
     // version = "2021.3"
-     version = "2021.1.3"
+    version = "2021.1.3"
 
     pluginName = "RestfulToolkit-fix"
     updateSinceUntilBuild = false
@@ -44,7 +44,7 @@ intellij {
 }
 
 group = "me.jinghong.restful.toolkit"
-version = "1.0.0"
+version = "2.0.6"
 
 repositories {
     mavenLocal()
@@ -57,4 +57,8 @@ dependencies {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+}
+
+tasks.publishPlugin {
+    token("perm:MTUzMzM1MDU4.OTItNjE5NQ==.Rgia8IwnESzJd8mwYBTDKzqEyaL45h")
 }
