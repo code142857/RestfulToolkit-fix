@@ -2,6 +2,7 @@ package com.zhaow.restful.method.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
@@ -46,6 +47,10 @@ public class GenerateQueryParamAction extends SpringAnnotatedMethodAction {
             String params = PsiMethodHelper.create(psiMethod).buildParamString();
 
             CopyPasteManager.getInstance().setContents(new StringSelection(params));
+            Editor myEditor = e.getData(CommonDataKeys.EDITOR);
+            if (myEditor != null) {
+                showPopupBalloon("复制成功" , myEditor);
+            }
         }
 
     }

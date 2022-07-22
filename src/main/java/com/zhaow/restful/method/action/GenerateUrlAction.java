@@ -2,17 +2,9 @@ package com.zhaow.restful.method.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ide.CopyPasteManager;
-import com.intellij.openapi.ui.popup.Balloon;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.ui.JBColor;
+import com.intellij.psi.*;
 import com.zhaow.restful.action.AbstractBaseAction;
 import com.zhaow.restful.annotations.JaxrsHttpMethodAnnotation;
 import com.zhaow.restful.annotations.JaxrsRequestAnnotation;
@@ -20,7 +12,6 @@ import com.zhaow.restful.annotations.SpringControllerAnnotation;
 import com.zhaow.restful.annotations.SpringRequestMethodAnnotation;
 import com.zhaow.restful.common.PsiMethodHelper;
 
-import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.util.Arrays;
 
@@ -31,7 +22,7 @@ import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_ELEMENT;
  * todo: 没考虑RequestMapping 多个值的情况
  */
 public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ extends AbstractBaseAction {
-    Editor myEditor ;
+    Editor myEditor;
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -49,15 +40,19 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
         }
 
         CopyPasteManager.getInstance().setContents(new StringSelection(servicePath));
-        showPopupBalloon("copied servicePath:\n " + servicePath);
+        showPopupBalloon("复制成功", myEditor);
     }
 
     private boolean isJaxrsRestMethod(PsiMethod psiMethod) {
-        PsiAnnotation[] annotations = psiMethod.getModifierList().getAnnotations();
+        final PsiModifierList modifierList = psiMethod.getModifierList();
+        if (modifierList == null) {
+            return false;
+        }
+        PsiAnnotation[] annotations = modifierList.getAnnotations();
 
         for (PsiAnnotation annotation : annotations) {
             boolean match = Arrays.stream(JaxrsHttpMethodAnnotation.values()).map(sra -> sra.getQualifiedName()).anyMatch(name -> name.equals(annotation.getQualifiedName()));
-            if(match) return match;
+            if (match) return match;
         }
 
         return false;
@@ -65,6 +60,7 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
 
     /**
      * spring rest 方法被选中才触发
+     *
      * @param e
      */
     @Override
@@ -73,10 +69,10 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
 
         boolean visible = false;
 
-        if(psiElement instanceof PsiMethod){
+        if (psiElement instanceof PsiMethod) {
             PsiMethod psiMethod = (PsiMethod) psiElement;
             // rest method 或标注了RestController 注解
-            visible =  (isRestController(psiMethod.getContainingClass()) || isRestfulMethod(psiMethod) );
+            visible = (isRestController(psiMethod.getContainingClass()) || isRestfulMethod(psiMethod));
         }
 
         setActionPresentationVisible(e, visible);
@@ -91,7 +87,7 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
 
         return modifierList.findAnnotation(SpringControllerAnnotation.REST_CONTROLLER.getQualifiedName()) != null ||
                 modifierList.findAnnotation(SpringControllerAnnotation.CONTROLLER.getQualifiedName()) != null ||
-                modifierList.findAnnotation(JaxrsRequestAnnotation.PATH.getQualifiedName()) != null ;
+                modifierList.findAnnotation(JaxrsRequestAnnotation.PATH.getQualifiedName()) != null;
     }
 
     private boolean isRestfulMethod(PsiMethod psiMethod) {
@@ -99,14 +95,14 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
 
         for (PsiAnnotation annotation : annotations) {
             boolean match = Arrays.stream(SpringRequestMethodAnnotation.values()).map(sra -> sra.getQualifiedName()).anyMatch(name -> name.equals(annotation.getQualifiedName()));
-            if(match) {
+            if (match) {
                 return match;
             }
         }
 
         for (PsiAnnotation annotation : annotations) {
             boolean match = Arrays.stream(JaxrsHttpMethodAnnotation.values()).map(sra -> sra.getQualifiedName()).anyMatch(name -> name.equals(annotation.getQualifiedName()));
-            if(match) {
+            if (match) {
                 return match;
             }
         }
@@ -115,17 +111,17 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
     }
 
 
-    private void showPopupBalloon(final String result) {
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                JBPopupFactory factory = JBPopupFactory.getInstance();
-                factory.createHtmlTextBalloonBuilder(result, null, new JBColor(new Color(186, 238, 186), new Color(73, 117, 73)), null)
-                        .setFadeoutTime(5000)
-                        .createBalloon()
-                        .show(factory.guessBestPopupLocation(myEditor), Balloon.Position.above);
-            }
-        });
-    }
+    // private void showPopupBalloon(final String result) {
+    //     ApplicationManager.getApplication().invokeLater(new Runnable() {
+    //         @Override
+    //         public void run() {
+    //             JBPopupFactory factory = JBPopupFactory.getInstance();
+    //             factory.createHtmlTextBalloonBuilder(result, null, new JBColor(new Color(186, 238, 186), new Color(73, 117, 73)), null)
+    //                     .setFadeoutTime(5000)
+    //                     .createBalloon()
+    //                     .show(factory.guessBestPopupLocation(myEditor), Balloon.Position.above);
+    //         }
+    //     });
+    // }
 
 }

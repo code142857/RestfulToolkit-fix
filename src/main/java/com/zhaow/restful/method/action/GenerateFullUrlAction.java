@@ -1,6 +1,8 @@
 package com.zhaow.restful.method.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiElement;
@@ -37,6 +39,10 @@ GenerateFullUrlAction extends SpringAnnotatedMethodAction {
             String url = PsiMethodHelper.create(psiMethod).withModule(module).buildFullUrlWithParams();
 
             CopyPasteManager.getInstance().setContents(new StringSelection(url));
+            Editor myEditor = e.getData(CommonDataKeys.EDITOR);
+            if (myEditor != null) {
+                showPopupBalloon("复制成功", myEditor);
+            }
         }
 
         if (psiElement instanceof KtNamedFunction) {

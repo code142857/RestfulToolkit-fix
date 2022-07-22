@@ -1,8 +1,8 @@
-<idea-plugin url="https://plugins.jetbrains.com/plugin/10292-restfultoolkit" allow-bundled-update="true">
+<idea-plugin url="https://plugins.jetbrains.com/plugin/16788-restfultoolkit-fix" allow-bundled-update="true">
     <id>me.jinghong.restful.toolkit</id>
     <name>RestfulToolkit-fix</name>
     <version>2.0.6</version>
-    <vendor email="153335058@qq.com" url="">jinghong</vendor>
+    <vendor email="153335058@qq.com" url="https://gitee.com/youthdream">jinghong</vendor>
 
     <description><![CDATA[
   <h3>A toolkit for RESTful services development.</h3>

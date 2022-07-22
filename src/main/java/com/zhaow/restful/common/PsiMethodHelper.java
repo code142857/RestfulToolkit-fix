@@ -110,9 +110,13 @@ public class PsiMethodHelper {
             if (psiClass != null) {
                 PsiField[] fields = psiClass.getFields();
                 for (PsiField field : fields) {
+                    if ("serialVersionUID".equals(field.getName())) {
+                        continue;
+                    }
                     Object fieldDefaultValue = PsiClassHelper.getJavaBaseTypeDefaultValue(field.getType().getPresentableText());
-                    if (fieldDefaultValue != null)
+                    if (fieldDefaultValue != null) {
                         baseTypeParamMap.put(field.getName(), fieldDefaultValue);
+                    }
                 }
             }
 
@@ -152,7 +156,7 @@ public class PsiMethodHelper {
 
             String paramType = psiParameter.getType().getCanonicalText();
             if (paramType.equals("javax.servlet.http.HttpServletRequest")
-                || paramType.equals("javax.servlet.http.HttpServletResponse"))
+                    || paramType.equals("javax.servlet.http.HttpServletResponse"))
                 continue;
             //必传参数 @RequestParam
             PsiModifierList modifierList = psiParameter.getModifierList();
@@ -278,7 +282,7 @@ public class PsiMethodHelper {
                 modifierList.findAnnotation(SpringControllerAnnotation.CONTROLLER.getQualifiedName()) != null ;*/
 
         return modifierList.findAnnotation(SpringControllerAnnotation.REST_CONTROLLER.getQualifiedName()) != null ||
-            modifierList.findAnnotation(SpringControllerAnnotation.CONTROLLER.getQualifiedName()) != null;
+                modifierList.findAnnotation(SpringControllerAnnotation.CONTROLLER.getQualifiedName()) != null;
     }
 
     //包含 "RestController" "Controller"
