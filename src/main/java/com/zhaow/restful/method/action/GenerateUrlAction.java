@@ -30,6 +30,9 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
         myEditor = e.getData(CommonDataKeys.EDITOR);
         PsiElement psiElement = e.getData(PSI_ELEMENT);
         PsiMethod psiMethod = (PsiMethod) psiElement;
+        if (psiMethod == null) {
+            return;
+        }
 
         //TODO: 需完善 jaxrs 支持
         String servicePath;
@@ -44,15 +47,13 @@ public class GenerateUrlAction /*extends RestfulMethodSpringSupportedAction*/ ex
     }
 
     private boolean isJaxrsRestMethod(PsiMethod psiMethod) {
-        final PsiModifierList modifierList = psiMethod.getModifierList();
-        if (modifierList == null) {
-            return false;
-        }
-        PsiAnnotation[] annotations = modifierList.getAnnotations();
+        PsiAnnotation[] annotations = psiMethod.getModifierList().getAnnotations();
 
         for (PsiAnnotation annotation : annotations) {
             boolean match = Arrays.stream(JaxrsHttpMethodAnnotation.values()).map(sra -> sra.getQualifiedName()).anyMatch(name -> name.equals(annotation.getQualifiedName()));
-            if (match) return match;
+            if (match) {
+                return match;
+            }
         }
 
         return false;

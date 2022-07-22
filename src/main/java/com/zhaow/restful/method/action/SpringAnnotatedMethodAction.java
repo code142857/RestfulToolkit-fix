@@ -25,6 +25,7 @@ public abstract class SpringAnnotatedMethodAction extends AbstractBaseAction {
 
     /**
      * spring rest 方法被选中才触发
+     *
      * @param e
      */
     @Override
@@ -33,10 +34,10 @@ public abstract class SpringAnnotatedMethodAction extends AbstractBaseAction {
 
         boolean visible = false;
 
-        if(psiElement instanceof PsiMethod){
+        if (psiElement instanceof PsiMethod) {
             PsiMethod psiMethod = (PsiMethod) psiElement;
             // rest method 或标注了RestController 注解
-            visible =  (isRestController(psiMethod.getContainingClass()) || isRestfulMethod(psiMethod) );
+            visible = (isRestController(psiMethod.getContainingClass()) || isRestfulMethod(psiMethod));
         }
         if (psiElement instanceof KtNamedFunction) {
             KtNamedFunction ktNamedFunction = (KtNamedFunction) psiElement;
@@ -46,7 +47,7 @@ public abstract class SpringAnnotatedMethodAction extends AbstractBaseAction {
 
                 List<PsiMethod> psiMethods = LightClassUtilsKt.toLightMethods(ktNamedFunction);
 
-                visible =  (isRestController(ktLightClass) || isRestfulMethod(psiMethods.get(0)) );
+                visible = (isRestController(ktLightClass) || isRestfulMethod(psiMethods.get(0)));
 
             }
         }
@@ -56,6 +57,9 @@ public abstract class SpringAnnotatedMethodAction extends AbstractBaseAction {
 
     //包含 "RestController" "Controller"
     private boolean isRestController(PsiClass containingClass) {
+        if (containingClass == null || containingClass.getModifierList() == null) {
+            return false;
+        }
         PsiModifierList modifierList = containingClass.getModifierList();
 
         /*return modifierList.findAnnotation(SpringControllerAnnotation.REST_CONTROLLER.getQualifiedName()) != null ||
@@ -63,20 +67,23 @@ public abstract class SpringAnnotatedMethodAction extends AbstractBaseAction {
 
         return modifierList.findAnnotation(SpringControllerAnnotation.REST_CONTROLLER.getQualifiedName()) != null ||
                 modifierList.findAnnotation(SpringControllerAnnotation.CONTROLLER.getQualifiedName()) != null /*||
-                modifierList.findAnnotation(JaxrsRequestAnnotation.PATH.getQualifiedName()) != null*/ ;
+                modifierList.findAnnotation(JaxrsRequestAnnotation.PATH.getQualifiedName()) != null*/;
     }
 
     private boolean isRestfulMethod(PsiMethod psiMethod) {
-        PsiAnnotation[] annotations = psiMethod.getModifierList().getAnnotations();
+        final PsiModifierList modifierList = psiMethod.getModifierList();
+        if (modifierList == null) {
+            return false;
+        }
+        PsiAnnotation[] annotations = modifierList.getAnnotations();
 
         for (PsiAnnotation annotation : annotations) {
             boolean match = Arrays.stream(SpringRequestMethodAnnotation.values()).map(sra -> sra.getQualifiedName()).anyMatch(name -> name.equals(annotation.getQualifiedName()));
-            if(match) return match;
+            if (match) return match;
         }
 
         return false;
     }
-
 
 
 }
