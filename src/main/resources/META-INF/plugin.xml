@@ -1,7 +1,7 @@
 <idea-plugin url="https://plugins.jetbrains.com/plugin/16788-restfultoolkit-fix" allow-bundled-update="true">
     <id>me.jinghong.restful.toolkit</id>
     <name>RestfulToolkit-fix</name>
-    <version>2.0.6</version>
+    <version>2.0.7</version>
     <vendor email="153335058@qq.com" url="https://gitee.com/youthdream">jinghong</vendor>
 
     <description><![CDATA[
@@ -33,6 +33,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <li>2.0.7 Bug fixed</li>
         <li>2.0.6 Bug fixed, add Copy Query Param (Key Value)</li>
         <li>2.0.5 Bug fixed, supported http request OPTIONS,TRACE,CONNECT methods. </li>
         <li>2.0.4 Fixed NullPointerException with Kotlin project.<br/>
@@ -82,9 +83,9 @@
     <depends>org.jetbrains.kotlin</depends>
 
     <project-components>
-        <!--        <component>-->
-        <!--            <implementation-class>com.zhaow.restful.navigator.RestServicesNavigator</implementation-class>-->
-        <!--        </component>-->
+        <component>
+            <implementation-class>com.zhaow.restful.navigator.RestServicesNavigator</implementation-class>
+        </component>
         <component>
             <implementation-class>com.zhaow.restful.navigator.RestServiceProjectsManager</implementation-class>
         </component>

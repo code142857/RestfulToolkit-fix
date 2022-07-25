@@ -3,13 +3,7 @@ package com.zhaow.restful.navigator;
 
 import com.intellij.ide.util.treeView.TreeState;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.AbstractProjectComponent;
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.WriteExternalException;
@@ -33,25 +27,22 @@ import java.awt.*;
 import java.net.URL;
 
 @State(name = "RestServicesNavigator", storages = {@Storage(StoragePathMacros.WORKSPACE_FILE)})
-public class RestServicesNavigator extends AbstractProjectComponent implements PersistentStateComponent<RestServicesNavigatorState>, ProjectComponent {
+public class RestServicesNavigator extends AbstractProjectComponent
+        implements PersistentStateComponent<RestServicesNavigatorState>, ProjectComponent {
     public static final Logger LOG = Logger.getInstance(RestServicesNavigator.class);
 
     public static final String TOOL_WINDOW_ID = "RestServices";
-
-    protected final Project myProject;
-
     private static final URL SYNC_ICON_URL = RestServicesNavigator.class.getResource("/actions/refresh.png");
-
-    RestServicesNavigatorState myState = new RestServicesNavigatorState();
-
-    private SimpleTree myTree;
-//    private JTree myTree;
+    protected final Project myProject;
+    //    private JTree myTree;
     protected RestServiceStructure myStructure;
+    RestServicesNavigatorState myState = new RestServicesNavigatorState();
+    private SimpleTree myTree;
     private ToolWindowEx myToolWindow;
 
     private RestServiceProjectsManager myProjectsManager;
 
-    public RestServicesNavigator(Project myProject,RestServiceProjectsManager projectsManager) {
+    public RestServicesNavigator(Project myProject, RestServiceProjectsManager projectsManager) {
         super(myProject);
         this.myProject = myProject;
         myProjectsManager = projectsManager;
@@ -63,7 +54,6 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
     }
 
 
-
     private void initTree() {
         myTree = new SimpleTree() {
 
@@ -71,15 +61,12 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 final JLabel myLabel = new JLabel(
                         RestfulToolkitBundle.message("toolkit.navigator.nothing.to.display", ToolkitUtil.formatHtmlImage(SYNC_ICON_URL)));
 
                 if (myProject.isInitialized()) {
                     return;
                 }
-//                if (myProjectsManager.hasProjects()) return;
-
                 myLabel.setFont(getFont());
                 myLabel.setBackground(getBackground());
                 myLabel.setForeground(getForeground());
@@ -91,8 +78,7 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
                 Graphics g2 = g.create(bounds.x + x, bounds.y + 20, bounds.width, bounds.height);
                 try {
                     myLabel.paint(g2);
-                }
-                finally {
+                } finally {
                     g2.dispose();
                 }
             }
@@ -105,22 +91,24 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
     @Override
     public void initComponent() {
         listenForProjectsChanges();
-//        ToolkitUtil.runWhenInitialized(myProject, (DumbAwareRunnable)() -> {
         ToolkitUtil.runWhenInitialized(myProject, () -> {
-            if (myProject.isDisposed()) return;
+            if (myProject.isDisposed()) {
+                return;
+            }
             initToolWindow();
         });
     }
 
     private void initToolWindow() {
-
         final ToolWindowManagerEx manager = ToolWindowManagerEx.getInstanceEx(myProject);
-        myToolWindow = (ToolWindowEx)manager.getToolWindow(TOOL_WINDOW_ID);
-        if(myToolWindow != null) {return;}
+        myToolWindow = (ToolWindowEx) manager.getToolWindow(TOOL_WINDOW_ID);
+        if (myToolWindow != null) {
+            return;
+        }
 
         initTree();
 
-        myToolWindow = (ToolWindowEx)manager.registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.RIGHT, myProject, true);
+        myToolWindow = (ToolWindowEx) manager.registerToolWindow(TOOL_WINDOW_ID, false, ToolWindowAnchor.RIGHT, myProject, true);
         myToolWindow.setIcon(ToolkitIcons.SERVICE);
 
         JPanel panel = new RestServicesNavigatorPanel(myProject, myTree);
@@ -135,7 +123,9 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
 
             @Override
             public void stateChanged() {
-                if (myToolWindow.isDisposed()) return;
+                if (myToolWindow.isDisposed()) {
+                    return;
+                }
                 boolean visible = myToolWindow.isVisible();
                 if (!visible || wasVisible) {
                     return;
@@ -146,7 +136,7 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
         };
         manager.addToolWindowManagerListener(listener, myProject);
 
-        //todo: 扩展 toolWindows 右键
+        //todo: extend toolWindows right click
 /*        ActionManager actionManager = ActionManager.getInstance();
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(actionManager.getAction("Maven.GroupProjects"));
@@ -163,14 +153,15 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
         scheduleStructureRequest(() -> myStructure.update());
 
     }
+
     private void scheduleStructureRequest(final Runnable r) {
-
-        if (myToolWindow == null) return;
-
-//        ToolkitUtil.invokeLater(myProject, () -> {
-//        ToolkitUtil.runWhenInitialized(myProject, () -> {
+        if (myToolWindow == null) {
+            return;
+        }
         ToolkitUtil.runWhenProjectIsReady(myProject, () -> {
-            if (!myToolWindow.isVisible()) return;
+            if (!myToolWindow.isVisible()) {
+                return;
+            }
 
             boolean shouldCreate = myStructure == null;
             if (shouldCreate) {
@@ -184,21 +175,15 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
 //            }
         });
 
-        //        if (isUnitTestMode()) {
-/*        if (myProject.isInitialized()  *//* myProject.isDisposed() *//*) {
-            if (myStructure != null) {
-                r.run();
-            }
-            return;
-        }*/
+
     }
 
     private void initStructure() {
-        myStructure = new RestServiceStructure(myProject,myProjectsManager,myTree);
+        myStructure = new RestServiceStructure(myProject, myProjectsManager, myTree);
 
     }
 
-    // 监听项目controller 方法变化
+
     private void listenForProjectsChanges() {
         //todo :
     }
@@ -211,8 +196,7 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
             try {
                 myState.treeState = new Element("root");
                 TreeState.createOn(myTree).writeExternal(myState.treeState);
-            }
-            catch (WriteExternalException e) {
+            } catch (WriteExternalException e) {
                 LOG.warn(e);
             }
         }
@@ -225,3 +209,4 @@ public class RestServicesNavigator extends AbstractProjectComponent implements P
         scheduleStructureUpdate();
     }
 }
+

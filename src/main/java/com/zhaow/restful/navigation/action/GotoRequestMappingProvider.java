@@ -12,15 +12,13 @@ import com.zhaow.utils.ToolkitUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class GotoRequestMappingProvider extends DefaultChooseByNameItemProvider {
 
-    @NotNull
-    @Override
-    public List<String> filterNames(@NotNull ChooseByNameBase base, @NotNull String[] names, @NotNull String pattern) {
-        return super.filterNames(base, names, pattern);
-    }
+    // @NotNull
+    // @Override
+    // public List<String> filterNames(@NotNull ChooseByNameBase base, @NotNull String[] names, @NotNull String pattern) {
+    //     return super.filterNames(base, names, pattern);
+    // }
 
 
     @NotNull
@@ -32,7 +30,7 @@ public class GotoRequestMappingProvider extends DefaultChooseByNameItemProvider 
         super(context);
     }
 
-    @Override
+    // @Override
     public boolean filterElements(@NotNull ChooseByNameBase base, @NotNull String pattern, boolean everywhere, @NotNull ProgressIndicator indicator, @NotNull Processor<Object> consumer) {
 
         pattern = ToolkitUtil.removeRedundancyMarkup(pattern);

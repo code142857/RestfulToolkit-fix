@@ -22,6 +22,7 @@ import com.zhaow.restful.navigation.action.RestServiceItem;
 import gnu.trove.THashMap;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.idea.KotlinLanguage;
 import org.jetbrains.kotlin.psi.KtNamedFunction;
@@ -36,19 +37,14 @@ import java.util.Map;
 
 public class RestServiceStructure extends SimpleTreeStructure {
     public static final Logger LOG = Logger.getInstance(RestServiceStructure.class);
-
-    //private SimpleTreeBuilder myTreeBuilder;
-    private SimpleTree myTree;
-
     private final Project myProject;
+    private final RestServiceProjectsManager myProjectsManager;
+    private final Map<RestServiceProject, ProjectNode> myProjectToNodeMapping = new THashMap<>();
+    RestServiceDetail myRestServiceDetail;
+    private SimpleTreeBuilder myTreeBuilder;
+    private SimpleTree myTree;
     private RootNode myRoot = new RootNode();
     private int serviceCount = 0;
-
-    private final RestServiceProjectsManager myProjectsManager;
-
-    RestServiceDetail myRestServiceDetail;
-
-    private final Map<RestServiceProject, ProjectNode> myProjectToNodeMapping = new THashMap<>();
 
     public RestServiceStructure(Project project,
                                 RestServiceProjectsManager projectsManager,
@@ -60,12 +56,36 @@ public class RestServiceStructure extends SimpleTreeStructure {
 
         configureTree(tree);
 
-        //myTreeBuilder = new SimpleTreeBuilder(tree, (DefaultTreeModel) tree.getModel(), this, null);
-        //Disposer.register(myProject, myTreeBuilder);
+        myTreeBuilder = new SimpleTreeBuilder(tree, (DefaultTreeModel) tree.getModel(), this, null);
+        Disposer.register(myProject, myTreeBuilder);
 
-        //myTreeBuilder.initRoot();
-        //myTreeBuilder.expand(myRoot, null);
+        myTreeBuilder.initRoot();
+        myTreeBuilder.expand(myRoot, null);
 
+    }
+
+    public static <T extends BaseSimpleNode> List<T> getSelectedNodes(SimpleTree tree, Class<T> nodeClass) {
+        final List<T> filtered = new ArrayList<>();
+        for (SimpleNode node : getSelectedNodes(tree)) {
+            if ((nodeClass != null) && (!nodeClass.isInstance(node))) {
+                filtered.clear();
+                break;
+            }
+            //noinspection unchecked
+            filtered.add((T) node);
+        }
+        return filtered;
+    }
+
+    private static List<SimpleNode> getSelectedNodes(SimpleTree tree) {
+        List<SimpleNode> nodes = new ArrayList<>();
+        TreePath[] treePaths = tree.getSelectionPaths();
+        if (treePaths != null) {
+            for (TreePath treePath : treePaths) {
+                nodes.add(tree.getNodeFor(treePath));
+            }
+        }
+        return nodes;
     }
 
     private void configureTree(SimpleTree tree) {
@@ -73,6 +93,7 @@ public class RestServiceStructure extends SimpleTreeStructure {
         tree.setShowsRootHandles(true);
     }
 
+    @NotNull
     @Override
     public RootNode getRootElement() {
         return myRoot;
@@ -119,7 +140,7 @@ public class RestServiceStructure extends SimpleTreeStructure {
                 myProjectToNodeMapping.put(each, node);
             }
         }
-        //myTreeBuilder.getUi().doUpdateFromRoot();
+        myTreeBuilder.getUi().doUpdateFromRoot();
 //        ((CachingSimpleNode) myRoot.getParent()).cleanUpCache();
 //        myRoot.childrenChanged();
         myRoot.updateProjectNodes(projects);
@@ -130,10 +151,16 @@ public class RestServiceStructure extends SimpleTreeStructure {
     }
 
     public void updateFrom(SimpleNode node) {
-        //myTreeBuilder.addSubtreeToUpdateByElement(node);
+        if (node == null) {
+            return;
+        }
+        myTreeBuilder.addSubtreeToUpdateByElement(node);
     }
 
     private void updateUpTo(SimpleNode node) {
+        if (node == null) {
+            return;
+        }
         SimpleNode each = node;
         while (each != null) {
             SimpleNode parent = each.getParent();
@@ -145,30 +172,13 @@ public class RestServiceStructure extends SimpleTreeStructure {
         }
     }
 
-    public static <T extends BaseSimpleNode> List<T> getSelectedNodes(SimpleTree tree, Class<T> nodeClass) {
-        final List<T> filtered = new ArrayList<>();
-        for (SimpleNode node : getSelectedNodes(tree)) {
-            if ((nodeClass != null) && (!nodeClass.isInstance(node))) {
-                filtered.clear();
-                break;
-            }
-            //noinspection unchecked
-            filtered.add((T) node);
-        }
-        return filtered;
-    }
+    private void resetRestServiceDetail() {
+        myRestServiceDetail.resetRequestTabbedPane();
+        myRestServiceDetail.setMethodValue(HttpMethod.GET.name());
+        myRestServiceDetail.setUrlValue("URL");
 
-    private static List<SimpleNode> getSelectedNodes(SimpleTree tree) {
-        List<SimpleNode> nodes = new ArrayList<>();
-        TreePath[] treePaths = tree.getSelectionPaths();
-        if (treePaths != null) {
-            for (TreePath treePath : treePaths) {
-                nodes.add(tree.getNodeFor(treePath));
-            }
-        }
-        return nodes;
+        myRestServiceDetail.initTab();
     }
-
 
     public abstract class BaseSimpleNode extends CachingSimpleNode {
 
@@ -204,14 +214,14 @@ public class RestServiceStructure extends SimpleTreeStructure {
 
     }
 
-
     public class RootNode extends BaseSimpleNode {
         List<ProjectNode> projectNodes = new ArrayList<>();
 
         protected RootNode() {
             super(null);
-            getTemplatePresentation().setIcon(AllIcons.Nodes.Module);
-            setIcon(AllIcons.Nodes.Module); //兼容 IDEA 2016
+            //FIXME 由之前的 AllIcons.Actions.MODULE => AllIcons.Actions.ModuleDirectory
+            getTemplatePresentation().setIcon(AllIcons.Actions.ModuleDirectory);
+            setIcon(AllIcons.Actions.ModuleDirectory); //兼容 IDEA 2016
         }
 
         @Override
@@ -381,7 +391,7 @@ public class RestServiceStructure extends SimpleTreeStructure {
             } else if (psiElement.getLanguage() == KotlinLanguage.INSTANCE) {
                 if (psiElement instanceof KtNamedFunction) {
                     KtNamedFunction ktNamedFunction = (KtNamedFunction) psiElement;
-                    KtFunctionHelper ktFunctionHelper = KtFunctionHelper.create(ktNamedFunction).withModule(serviceItem.getModule());
+                    KtFunctionHelper ktFunctionHelper = (KtFunctionHelper) KtFunctionHelper.create(ktNamedFunction).withModule(serviceItem.getModule());
                     requestParams = ktFunctionHelper.buildParamString();
                     requestBodyJson = ktFunctionHelper.buildRequestBodyJson();
                 }
@@ -438,14 +448,6 @@ public class RestServiceStructure extends SimpleTreeStructure {
             return "Toolkit.Navigator";
         }*/
 
-    }
-
-    private void resetRestServiceDetail() {
-        myRestServiceDetail.resetRequestTabbedPane();
-        myRestServiceDetail.setMethodValue(HttpMethod.GET.name());
-        myRestServiceDetail.setUrlValue("URL");
-
-        myRestServiceDetail.initTab();
     }
 
 }

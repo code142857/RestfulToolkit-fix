@@ -9,15 +9,15 @@ buildscript {
         maven { url = uri("https://dl.bintray.com/jetbrains/intellij-third-party-dependencies/") }
     }
     dependencies {
-        classpath("org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.7.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
+        classpath("org.jetbrains.intellij.plugins:gradle-intellij-plugin:1.7.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0")
     }
 }
 
 plugins {
     java
-    kotlin("jvm") version "1.4.32"
-    id("org.jetbrains.intellij") version "0.7.2"
+    kotlin("jvm") version "1.7.0"
+    id("org.jetbrains.intellij") version "1.7.0"
 }
 
 java {
@@ -27,25 +27,29 @@ java {
 }
 
 intellij {
-    type = "IU"
-    setPlugins(
-        "java",
-        "Kotlin",
-        "Spring",
-        "SpringBoot",
-        "properties",
-        "yaml"
+    type.set("IU")
+    plugins.set(
+        listOf(
+            "java",
+            "Kotlin",
+            "Spring",
+            "SpringBoot",
+            "properties",
+            "yaml"
+        )
     )
-    // version = "2021.3"
-    version = "2021.1.3"
-
-    pluginName = "RestfulToolkit-fix"
-    updateSinceUntilBuild = false
-    isDownloadSources = true
+//     version = "2021.3"
+     version .set( "2021.1.3")
+//    version.set("2022.1.4")
+//    localPath =
+//        "/Users/jinghong/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/222.3345.90/IntelliJ IDEA.app/Contents"
+    pluginName.set("RestfulToolkit-fix")
+    updateSinceUntilBuild.set(false)
+    downloadSources.set(true)
 }
 
 group = "me.jinghong.restful.toolkit"
-version = "2.0.6"
+version = "2.0.7"
 
 repositories {
     mavenLocal()
@@ -54,6 +58,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.fifesoft:rsyntaxtextarea:3.1.6")
 }
 
 tasks.withType<JavaCompile> {
@@ -61,5 +66,5 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.publishPlugin {
-    token("perm:MTUzMzM1MDU4.OTItNjE5NQ==.Rgia8IwnESzJd8mwYBTDKzqEyaL45h")
+    token.set("perm:MTUzMzM1MDU4.OTItNjE5NQ==.Rgia8IwnESzJd8mwYBTDKzqEyaL45h")
 }
