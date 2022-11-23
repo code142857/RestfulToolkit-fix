@@ -91,11 +91,13 @@ public class RestServicesNavigator extends AbstractProjectComponent
     @Override
     public void initComponent() {
         listenForProjectsChanges();
-        ToolkitUtil.runWhenInitialized(myProject, () -> {
+        ToolkitUtil.runDumbAware(myProject, () -> {
             if (myProject.isDisposed()) {
                 return;
             }
-            initToolWindow();
+            if (myProject.isOpen()) {
+                initToolWindow();
+            }
         });
     }
 

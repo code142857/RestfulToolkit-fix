@@ -13,15 +13,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.SystemInfoRt;
 import com.intellij.ui.components.JBPanel;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.util.ui.UIUtil;
 import com.zhaow.restful.common.RequestHelper;
 import com.zhaow.utils.JsonUtils;
 import com.zhaow.utils.ToolkitUtil;
 import org.apache.commons.lang.StringUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -71,7 +72,7 @@ public class RestServiceDetail extends JBPanel/*WithEmptyText*/{
 
     public void initTab() {
         String jsonFormat = "Try press 'Ctrl(Cmd) Enter'";
-        RSyntaxTextArea textArea = createTextArea("{'key':'value'}", SyntaxConstants.SYNTAX_STYLE_JSON);
+        RSyntaxTextArea textArea = createTextArea("", SyntaxConstants.SYNTAX_STYLE_JSON);
         addRequestTabbedPane(jsonFormat, textArea);
     }
 
@@ -230,7 +231,7 @@ public class RestServiceDetail extends JBPanel/*WithEmptyText*/{
     public void addRequestBodyTabPanel(String text) {
         String reqBodyTitle = "RequestBody";
         if (requestBodyTextArea == null) {
-            requestBodyTextArea = createTextArea(text, SyntaxConstants.SYNTAX_STYLE_NONE);
+            requestBodyTextArea = createTextArea(text, SyntaxConstants.SYNTAX_STYLE_JSON);
         } else {
             requestBodyTextArea.setText(text);
         }
@@ -238,9 +239,22 @@ public class RestServiceDetail extends JBPanel/*WithEmptyText*/{
     }
 
 
-    public void addRequestTabbedPane(String title, JTextArea jTextArea) {
-        JScrollPane jbScrollPane = new JBScrollPane(jTextArea, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    public void addRequestTabbedPane(String title, RSyntaxTextArea jTextArea) {
+
+        if (UIUtil.isUnderDarcula()) {
+            jTextArea.setBackground(new Color(0x2B2B2B));
+            jTextArea.setForeground(new Color(0xBBBBBB));
+
+            jTextArea.setSelectionColor(new Color(0x28437F));
+            jTextArea.setCurrentLineHighlightColor(new Color(0x323232));
+        } else {
+            jTextArea.setBackground(new Color(0xFFFFFF));
+            jTextArea.setForeground(new Color(0x000000));
+            jTextArea.setSelectionColor(new Color(0xA6D2FF));
+            jTextArea.setCurrentLineHighlightColor(new Color(0xFCFAED));
+        }
+
+        RTextScrollPane jbScrollPane = new RTextScrollPane(jTextArea);
         jTextArea.addKeyListener(new TextAreaKeyAdapter(jTextArea));
 
         requestTabbedPane.addTab(title, jbScrollPane);

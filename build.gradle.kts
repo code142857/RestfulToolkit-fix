@@ -49,7 +49,7 @@ intellij {
 }
 
 group = "me.jinghong.restful.toolkit"
-version = "2.0.7"
+version = "2.0.8"
 
 repositories {
     mavenLocal()
@@ -63,8 +63,4 @@ dependencies {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-}
-
-tasks.publishPlugin {
-    token.set("perm:MTUzMzM1MDU4.OTItNjE5NQ==.Rgia8IwnESzJd8mwYBTDKzqEyaL45h")
 }

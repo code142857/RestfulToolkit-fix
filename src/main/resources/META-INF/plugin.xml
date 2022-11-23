@@ -33,6 +33,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
+        <li>2.0.8 修复2022.3版本报错问题<br/>黑色主题下请求参数的面板也改为黑色</li>
         <li>2.0.7 Bug fixed</li>
         <li>2.0.6 Bug fixed, add Copy Query Param (Key Value)</li>
         <li>2.0.5 Bug fixed, supported http request OPTIONS,TRACE,CONNECT methods. </li>
